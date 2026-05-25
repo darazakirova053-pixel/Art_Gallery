@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ArtGallery — Личный кабинет</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
+</head>
+<body>
+    <nav class="navbar navbar-dark fixed-top" style="background-color: #656f57;">
+        <div class="container-fluid px-3 px-md-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="img/logo.svg" alt="logo" style="height: 40px;">
+                <span class="fw-bold fs-4" style="color: white;">ArtGallery</span>
+            </a>
+            
+            <div class="d-none d-md-flex align-items-center gap-4">
+                <ul class="navbar-nav flex-row gap-3">
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html"><i class="fas fa-home me-2"></i>Главная</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="catalog.html"><i class="fas fa-images me-2"></i>Каталог</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="news.html"><i class="fas fa-newspaper me-2"></i>Новости</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="cart.html"><i class="fas fa-shopping-cart me-2"></i>Корзина <span id="cartBadgeDesktop" class="cart-badge">0</span></a></li>
+                </ul>
+                <button class="btn btn-outline-light btn-sm" onclick="logoutAndGoHome()"><i class="fas fa-sign-out-alt me-1"></i>Выйти</button>
+            </div>
+            
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="background-color: #656f57;">
+                <div class="offcanvas-header border-bottom border-light">
+                    <h5 class="offcanvas-title text-white" id="offcanvasNavbarLabel">ArtGallery</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <div class="user-info-mobile-top text-center mb-4" style="display: block; cursor: pointer;" onclick="window.location.href='profile.html'; closeOffcanvasManual()">
+                        <i class="fas fa-user-circle text-white" style="font-size: 60px;"></i>
+                        <div class="text-white mt-2 fw-bold user-name" style="font-size: 1.1rem;"></div>
+                    </div>
+                    
+                    <ul class="navbar-nav flex-grow-1 pe-3">
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="index.html" onclick="closeOffcanvasManual()"><i class="fas fa-home me-3"></i>Главная</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="catalog.html" onclick="closeOffcanvasManual()"><i class="fas fa-images me-3"></i>Каталог</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="news.html" onclick="closeOffcanvasManual()"><i class="fas fa-newspaper me-3"></i>Новости</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="cart.html" onclick="closeOffcanvasManual()"><i class="fas fa-shopping-cart me-3"></i>Корзина <span id="cartBadgeMobile" class="cart-badge">0</span></a></li>
+                    </ul>
+                    
+                    <div class="user-info-mobile-bottom mt-auto pt-3" style="display: block;">
+                        <hr class="bg-light">
+                        <button class="btn btn-outline-light w-100" onclick="logoutAndGoHome(); closeOffcanvasManual()"><i class="fas fa-sign-out-alt me-2"></i>Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-flex-wrapper">
+        <div class="main-content container-mobile" style="margin-top: 100px;">
+            <!-- Аватар и основная информация -->
+            <div style="text-align: center; padding: 20px;">
+                <div class="avatar-container" onclick="document.getElementById('avatarInput').click()">
+                    <img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23642226'/%3E%3Ctext x='50' y='67' text-anchor='middle' fill='white' font-size='40' font-family='Arial'%3E👤%3C/text%3E%3C/svg%3E" alt="Аватар">
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this)">
+                <h2 id="profileName"></h2>
+                <p><i class="fas fa-envelope me-2"></i> <span id="profileEmail"></span></p>
+                <p><i class="fas fa-phone me-2"></i> <span id="profilePhone"></span></p>
+                <p><i class="fas fa-calendar-alt me-2"></i> Зарегистрирован: <span id="profileRegDate"></span></p>
+            </div>
+            
+            <!-- Статистика -->
+            <div style="display: flex; gap: 20px; justify-content: center; margin: 30px 0; flex-wrap: wrap;">
+                <div style="text-align: center; padding: 15px; background: #f9f6ef; border-radius: 20px; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: 800;" id="purchasedCount">0</div>
+                    <div><i class="fas fa-shopping-bag me-1"></i>Куплено работ</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: #f9f6ef; border-radius: 20px; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: 800;" id="favoritesCount">0</div>
+                    <div><i class="fas fa-heart me-1"></i>В избранном</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: #f9f6ef; border-radius: 20px; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: 800;" id="ordersCount">0</div>
+                    <div><i class="fas fa-truck me-1"></i>Всего заказов</div>
+                </div>
+            </div>
+            
+            <!-- Вкладки -->
+            <div class="profile-tabs">
+                <div class="profile-tab active" data-tab="info"><i class="fas fa-user me-2"></i>Личные данные</div>
+                <div class="profile-tab" data-tab="edit"><i class="fas fa-edit me-2"></i>Редактировать</div>
+                <div class="profile-tab" data-tab="orders"><i class="fas fa-shopping-bag me-2"></i>Мои заказы</div>
+                <div class="profile-tab" data-tab="favorites"><i class="fas fa-heart me-2"></i>Избранное</div>
+            </div>
+            
+            <!-- Панель: Личные данные -->
+            <div id="info-tab" class="profile-tab-pane active">
+                <div class="admin-card">
+                    <h4><i class="fas fa-user-circle me-2"></i>Личная информация</h4>
+                    <hr>
+                    <p><strong>Имя:</strong> <span id="infoName"></span></p>
+                    <p><strong>Email:</strong> <span id="infoEmail"></span></p>
+                    <p><strong>Телефон:</strong> <span id="infoPhone"></span></p>
+                    <p><strong>Дата регистрации:</strong> <span id="infoRegDate"></span></p>
+                    <button class="btn-primary-custom mt-2" onclick="switchToEditTab()"><i class="fas fa-edit me-2"></i>Редактировать профиль</button>
+                </div>
+            </div>
+            
+            <!-- Панель: Редактирование -->
+            <div id="edit-tab" class="profile-tab-pane">
+                <div class="admin-card">
+                    <h4><i class="fas fa-edit me-2"></i>Редактирование профиля</h4>
+                    <hr>
+                    <form id="editProfileForm">
+                        <div class="edit-form-group">
+                            <label><i class="fas fa-user me-1"></i>Имя</label>
+                            <input type="text" id="editName" class="form-control" required>
+                        </div>
+                        <div class="edit-form-group">
+                            <label><i class="fas fa-envelope me-1"></i>Email</label>
+                            <input type="email" id="editEmail" class="form-control readonly-field" readonly>
+                            <small class="text-muted">Email нельзя изменить</small>
+                        </div>
+                        <div class="edit-form-group">
+                            <label><i class="fas fa-phone me-1"></i>Телефон</label>
+                            <input type="tel" id="editPhone" class="form-control" required>
+                        </div>
+                        <div class="edit-form-group">
+                            <label><i class="fas fa-lock me-1"></i>Новый пароль (оставьте пустым, если не хотите менять)</label>
+                            <input type="password" id="editPassword" class="form-control" placeholder="Минимум 6 символов">
+                        </div>
+                        <div class="edit-form-group">
+                            <label><i class="fas fa-lock me-1"></i>Подтверждение пароля</label>
+                            <input type="password" id="editConfirmPassword" class="form-control" placeholder="Повторите пароль">
+                        </div>
+                        <button type="submit" class="btn-primary-custom"><i class="fas fa-save me-2"></i>Сохранить изменения</button>
+                        <button type="button" class="btn-outline-custom ms-2" onclick="switchToInfoTab()"><i class="fas fa-times me-2"></i>Отмена</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Панель: Мои заказы -->
+            <div id="orders-tab" class="profile-tab-pane">
+                <div class="admin-card">
+                    <h4><i class="fas fa-shopping-bag me-2"></i>История заказов</h4>
+                    <hr>
+                    <div id="ordersListContainer"><p class="text-muted text-center">Загрузка...</p></div>
+                </div>
+            </div>
+            
+            <!-- Панель: Избранное -->
+            <div id="favorites-tab" class="profile-tab-pane">
+                <div class="admin-card">
+                    <h4><i class="fas fa-heart me-2"></i>Избранные работы</h4>
+                    <hr>
+                    <div id="favoritesListContainer"><p class="text-muted text-center">Загрузка...</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center py-4 mt-5" style="background-color: #656f57; color: white;">
+        <p class="mb-0"><i class="far fa-copyright me-1"></i> 2025-2026 ArtGallery. Все права защищены.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+        // ========== ПРОФИЛЬ ==========
+        let currentUserData = null;
+        let userFavorites = [];
+        let userOrders = [];
+        
+        function closeOffcanvasManual() {
+            const offcanvasElement = document.getElementById('offcanvasNavbar');
+            if (offcanvasElement) {
+                const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                if (offcanvas) offcanvas.hide();
+            }
+        }
+        
+        window.logoutAndGoHome = function() {
+            localStorage.removeItem('artCurrentUser');
+            window.location.href = 'index.html';
+        };
+        
+        // Загрузка данных профиля
+        function loadProfileData() {
+            const saved = localStorage.getItem('artCurrentUser');
+            if (!saved) { 
+                window.location.href = 'index.html'; 
+                return; 
+            }
+            currentUserData = JSON.parse(saved);
+            
+            // Загружаем избранное
+            const users = JSON.parse(localStorage.getItem('artUsers') || '[]');
+            const fullUser = users.find(u => u.id === currentUserData.id);
+            if (fullUser) {
+                userFavorites = fullUser.favorites || [];
+                currentUserData.favorites = userFavorites;
+            }
+            
+            // Загружаем заказы
+            const allOrders = JSON.parse(localStorage.getItem('artOrders') || '[]');
+            userOrders = allOrders.filter(o => o.userId === currentUserData.id);
+            
+            // Заполняем данные
+            document.getElementById('profileName').textContent = currentUserData.name;
+            document.getElementById('profileEmail').textContent = currentUserData.email;
+            document.getElementById('profilePhone').textContent = currentUserData.phone || 'Не указан';
+            
+            const regDate = currentUserData.createdAt ? new Date(currentUserData.createdAt).toLocaleDateString('ru-RU') : new Date().toLocaleDateString('ru-RU');
+            document.getElementById('profileRegDate').textContent = regDate;
+            
+            document.getElementById('infoName').textContent = currentUserData.name;
+            document.getElementById('infoEmail').textContent = currentUserData.email;
+            document.getElementById('infoPhone').textContent = currentUserData.phone || 'Не указан';
+            document.getElementById('infoRegDate').textContent = regDate;
+            
+            document.getElementById('editName').value = currentUserData.name;
+            document.getElementById('editEmail').value = currentUserData.email;
+            document.getElementById('editPhone').value = currentUserData.phone || '';
+            
+            document.getElementById('purchasedCount').textContent = (currentUserData.purchasedWorks || []).length;
+            document.getElementById('favoritesCount').textContent = userFavorites.length;
+            document.getElementById('ordersCount').textContent = userOrders.length;
+            
+            // Загружаем аватар
+            const avatarUrl = currentUserData.avatar || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'50\' fill=\'%23642226\'/%3E%3Ctext x=\'50\' y=\'67\' text-anchor=\'middle\' fill=\'white\' font-size=\'40\' font-family=\'Arial\'%3E👤%3C/text%3E%3C/svg%3E';
+            document.getElementById('profileAvatar').src = avatarUrl;
+            
+            renderOrders();
+            renderFavorites();
+        }
+        
+        // Загрузка аватара
+        window.uploadAvatar = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarUrl = e.target.result;
+                    document.getElementById('profileAvatar').src = avatarUrl;
+                    
+                    // Сохраняем в localStorage
+                    let users = JSON.parse(localStorage.getItem('artUsers') || '[]');
+                    const userIndex = users.findIndex(u => u.id === currentUserData.id);
+                    if (userIndex !== -1) {
+                        users[userIndex].avatar = avatarUrl;
+                        localStorage.setItem('artUsers', JSON.stringify(users));
+                        
+                        currentUserData.avatar = avatarUrl;
+                        localStorage.setItem('artCurrentUser', JSON.stringify(currentUserData));
+                        
+                        if (typeof showToast === 'function') {
+                            showToast('Аватар обновлен!');
+                        } else {
+                            alert('Аватар обновлен!');
+                        }
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+        
+        // Отрисовка заказов
+        function renderOrders() {
+            const container = document.getElementById('ordersListContainer');
+            if (!container) return;
+            
+            if (userOrders.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">У вас пока нет заказов</p>';
+                return;
+            }
+            
+            let html = '';
+            for (let order of [...userOrders].reverse()) {
+                const statusClass = {
+                    'new': 'order-status-new',
+                    'processing': 'order-status-processing',
+                    'shipped': 'order-status-shipped',
+                    'delivered': 'order-status-delivered',
+                    'cancelled': 'order-status-cancelled'
+                }[order.status] || 'order-status-new';
+                
+                const statusText = {
+                    'new': 'Новый',
+                    'processing': 'В обработке',
+                    'shipped': 'Отправлен',
+                    'delivered': 'Доставлен',
+                    'cancelled': 'Отменён'
+                }[order.status] || 'Новый';
+                
+                html += `
+                    <div class="order-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <strong>Заказ #${order.id}</strong>
+                                <br>
+                                <small>${new Date(order.date).toLocaleDateString('ru-RU')}</small>
+                            </div>
+                            <span class="order-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <hr>
+                        <div><strong>Сумма:</strong> ${(order.total || 0).toLocaleString()} ₽</div>
+                        <div><strong>Адрес:</strong> ${order.address || '-'}</div>
+                        <div><strong>Доставка:</strong> ${order.deliveryDate ? new Date(order.deliveryDate).toLocaleString('ru-RU') : '-'}</div>
+                        <details class="mt-2">
+                            <summary style="color: #642226; cursor: pointer;">Состав заказа (${order.items?.length || 0} товаров)</summary>
+                            <div class="mt-2">
+                                ${order.items?.map(item => `<div>• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString()} ₽</div>`).join('') || 'Нет товаров'}
+                            </div>
+                        </details>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+        
+        // Отрисовка избранного
+        function renderFavorites() {
+            const container = document.getElementById('favoritesListContainer');
+            if (!container) return;
+            
+            if (userFavorites.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">У вас пока нет избранных работ</p><div class="text-center"><a href="catalog.html" class="btn-primary-custom">Перейти в каталог</a></div>';
+                return;
+            }
+            
+            const artworksGlobal = window.artworksGlobal || [];
+            let html = '<div class="row">';
+            for (let favId of userFavorites) {
+                const art = artworksGlobal.find(a => a.id === favId);
+                if (art) {
+                    html += `
+                        <div class="col-sm-6 col-md-4 mb-3">
+                            <div class="favorite-item">
+                                <img src="${art.image}" alt="${art.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23ccc\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'white\' font-size=\'12\'%3EНет фото%3C/text%3E%3C/svg%3E'">
+                                <div>
+                                    <strong>${art.name}</strong>
+                                    <br>
+                                    ${art.author}
+                                    <br>
+                                    <strong>${art.price.toLocaleString()} ₽</strong>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn-primary-custom btn-sm" onclick="addToCartAndGo('${art.name}', ${art.price})">Купить</button>
+                                    <button class="btn-outline-custom btn-sm ms-2" onclick="removeFromFavorites(${art.id})">Удалить</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // Добавление в корзину и переход
+        window.addToCartAndGo = function(name, price) {
+            if (typeof addToCart === 'function') {
+                addToCart(name, price);
+                window.location.href = 'cart.html';
+            } else {
+                alert('Ошибка: функция корзины не загружена');
+            }
+        };
+        
+        // Удаление из избранного
+        window.removeFromFavorites = function(artId) {
+            let users = JSON.parse(localStorage.getItem('artUsers') || '[]');
+            const userIndex = users.findIndex(u => u.id === currentUserData.id);
+            if (userIndex !== -1) {
+                users[userIndex].favorites = (users[userIndex].favorites || []).filter(id => id !== artId);
+                localStorage.setItem('artUsers', JSON.stringify(users));
+                
+                const updatedUser = { ...users[userIndex] };
+                delete updatedUser.password;
+                localStorage.setItem('artCurrentUser', JSON.stringify(updatedUser));
+                currentUserData = updatedUser;
+                userFavorites = updatedUser.favorites || [];
+                
+                document.getElementById('favoritesCount').textContent = userFavorites.length;
+                renderFavorites();
+                
+                if (typeof showToast === 'function') {
+                    showToast('Удалено из избранного');
+                } else {
+                    alert('Удалено из избранного');
+                }
+            }
+        };
+        
+        // Сохранение изменений профиля
+        document.getElementById('editProfileForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newName = document.getElementById('editName').value.trim();
+            const newPhone = document.getElementById('editPhone').value.trim();
+            const newPassword = document.getElementById('editPassword').value;
+            const confirmPassword = document.getElementById('editConfirmPassword').value;
+            
+            if (!newName) {
+                alert('Введите имя');
+                return;
+            }
+            
+            if (newPassword) {
+                if (newPassword.length < 6) {
+                    alert('Пароль должен быть минимум 6 символов');
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    alert('Пароли не совпадают');
+                    return;
+                }
+            }
+            
+            let users = JSON.parse(localStorage.getItem('artUsers') || '[]');
+            const userIndex = users.findIndex(u => u.id === currentUserData.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].name = newName;
+                users[userIndex].phone = newPhone;
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+                localStorage.setItem('artUsers', JSON.stringify(users));
+                
+                const updatedUser = { ...users[userIndex] };
+                delete updatedUser.password;
+                localStorage.setItem('artCurrentUser', JSON.stringify(updatedUser));
+                currentUserData = updatedUser;
+                
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editConfirmPassword').value = '';
+                
+                loadProfileData();
+                switchToInfoTab();
+                
+                if (typeof showToast === 'function') {
+                    showToast('Профиль обновлен!');
+                } else {
+                    alert('Профиль обновлен!');
+                }
+            }
+        });
+        
+        // Переключение вкладок
+        function switchToInfoTab() {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-tab-pane').forEach(p => p.classList.remove('active'));
+            const infoTab = document.querySelector('.profile-tab[data-tab="info"]');
+            if (infoTab) infoTab.classList.add('active');
+            const infoPane = document.getElementById('info-tab');
+            if (infoPane) infoPane.classList.add('active');
+        }
+        
+        function switchToEditTab() {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-tab-pane').forEach(p => p.classList.remove('active'));
+            const editTab = document.querySelector('.profile-tab[data-tab="edit"]');
+            if (editTab) editTab.classList.add('active');
+            const editPane = document.getElementById('edit-tab');
+            if (editPane) editPane.classList.add('active');
+        }
+        
+        function switchToOrdersTab() {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-tab-pane').forEach(p => p.classList.remove('active'));
+            const ordersTab = document.querySelector('.profile-tab[data-tab="orders"]');
+            if (ordersTab) ordersTab.classList.add('active');
+            const ordersPane = document.getElementById('orders-tab');
+            if (ordersPane) ordersPane.classList.add('active');
+            renderOrders();
+        }
+        
+        function switchToFavoritesTab() {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.profile-tab-pane').forEach(p => p.classList.remove('active'));
+            const favTab = document.querySelector('.profile-tab[data-tab="favorites"]');
+            if (favTab) favTab.classList.add('active');
+            const favPane = document.getElementById('favorites-tab');
+            if (favPane) favPane.classList.add('active');
+            renderFavorites();
+        }
+        
+        window.switchToInfoTab = switchToInfoTab;
+        window.switchToEditTab = switchToEditTab;
+        
+        // Обработка кликов по вкладкам
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                if (tabId === 'info') switchToInfoTab();
+                else if (tabId === 'edit') switchToEditTab();
+                else if (tabId === 'orders') switchToOrdersTab();
+                else if (tabId === 'favorites') switchToFavoritesTab();
+            });
+        });
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+            document.querySelectorAll('#offcanvasNavbar a, #offcanvasNavbar button').forEach(link => {
+                link.addEventListener('click', function() { setTimeout(closeOffcanvasManual, 100); });
+            });
+        });
+    </script>
+</body>
+</html>

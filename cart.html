@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>ArtGallery — Корзина</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg" />
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .main-flex-wrapper { flex: 1 0 auto; }
+        footer { flex-shrink: 0; margin-top: auto; }
+        .cart-container { min-height: calc(100vh - 200px); display: flex; flex-direction: column; }
+        .cart-content { flex: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark fixed-top" style="background-color: #656f57;">
+        <div class="container-fluid px-3 px-md-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="img/logo.svg" alt="logo" style="height: 40px;">
+                <span class="fw-bold fs-4" style="color: white;">ArtGallery</span>
+            </a>
+            
+            <div class="d-none d-md-flex align-items-center gap-4">
+                <ul class="navbar-nav flex-row gap-3">
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html"><i class="fas fa-home me-2"></i>Главная</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="catalog.html"><i class="fas fa-images me-2"></i>Каталог</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="news.html"><i class="fas fa-newspaper me-2"></i>Новости</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="cart.html"><i class="fas fa-shopping-cart me-2"></i>Корзина <span id="cartBadgeDesktop" class="cart-badge">0</span></a></li>
+                </ul>
+                <div class="auth-buttons d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm" onclick="showLoginModal()"><i class="fas fa-sign-in-alt me-1"></i> Вход</button>
+                    <button class="btn btn-outline-light btn-sm" onclick="showRegisterModal()"><i class="fas fa-user-plus me-1"></i> Регистрация</button>
+                </div>
+                <div class="user-info d-none align-items-center gap-3" style="display: none;">
+                    <i class="fas fa-user-circle text-white" style="font-size: 32px;"></i>
+                    <span class="user-name text-white fw-bold"></span>
+                    <button class="btn btn-outline-light btn-sm" onclick="logoutUser()"><i class="fas fa-sign-out-alt me-1"></i> Выйти</button>
+                </div>
+            </div>
+            
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="background-color: #656f57;">
+                <div class="offcanvas-header border-bottom border-light">
+                    <h5 class="offcanvas-title text-white" id="offcanvasNavbarLabel">ArtGallery</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <div class="user-info-mobile-top text-center mb-4" style="display: none; cursor: pointer;" onclick="goToProfile(); closeOffcanvasManual()">
+                        <i class="fas fa-user-circle text-white" style="font-size: 60px;"></i>
+                        <div class="text-white mt-2 fw-bold user-name" style="font-size: 1.1rem;"></div>
+                    </div>
+                    
+                    <div class="auth-buttons-mobile-top text-center mb-4" style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="btn btn-outline-light w-100" onclick="showLoginModal(); closeOffcanvasManual()"><i class="fas fa-sign-in-alt me-2"></i>Вход</button>
+                        <button class="btn btn-outline-light w-100" onclick="showRegisterModal(); closeOffcanvasManual()"><i class="fas fa-user-plus me-2"></i>Регистрация</button>
+                    </div>
+                    
+                    <ul class="navbar-nav flex-grow-1 pe-3">
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="index.html" onclick="closeOffcanvasManual()"><i class="fas fa-home me-3"></i>Главная</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="catalog.html" onclick="closeOffcanvasManual()"><i class="fas fa-images me-3"></i>Каталог</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="news.html" onclick="closeOffcanvasManual()"><i class="fas fa-newspaper me-3"></i>Новости</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="cart.html" onclick="closeOffcanvasManual()"><i class="fas fa-shopping-cart me-3"></i>Корзина <span id="cartBadgeMobile" class="cart-badge">0</span></a></li>
+                    </ul>
+                    
+                    <div class="user-info-mobile-bottom mt-auto pt-3" style="display: none;">
+                        <hr class="bg-light">
+                        <button class="btn btn-outline-light w-100" onclick="logoutUser(); closeOffcanvasManual()"><i class="fas fa-sign-out-alt me-2"></i>Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-flex-wrapper">
+        <div class="container mt-5 pt-4 cart-container">
+            <div class="cart-content">
+                <h2 class="section-title"><i class="fas fa-shopping-cart me-2"></i>Корзина</h2>
+                <div id="cart-items-list" class="mb-3"></div>
+                <div class="fw-bold fs-4 mb-3" id="cart-total"><i class="fas fa- ruble-sign me-2"></i>Итого: 0 ₽</div>
+                <button class="btn btn-primary-custom" id="checkoutBtn"><i class="fas fa-credit-card me-2"></i>Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <p><i class="far fa-copyright me-1"></i> 2025-2026 ArtGallery. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <div class="custom-modal" id="loginModal">
+        <div class="custom-modal-dialog">
+            <div class="custom-modal-content">
+                <div class="custom-modal-header border-0">
+                    <h5 class="custom-modal-title"><i class="fas fa-sign-in-alt me-2"></i> Вход</h5>
+                    <button class="btn-close-modal" onclick="closeModal('loginModal')">✕</button>
+                </div>
+                <div class="custom-modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label><input type="email" class="form-control" id="loginEmail" required placeholder="example@mail.ru"></div>
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-lock me-1"></i>Пароль</label><input type="password" class="form-control" id="loginPassword" required placeholder="••••••"></div>
+                        <button type="submit" class="btn-primary-custom w-100"><i class="fas fa-sign-in-alt me-2"></i>Войти</button>
+                    </form>
+                    <hr>
+                    <p class="text-center mb-0">Нет аккаунта? <a href="#" onclick="closeModal('loginModal'); showRegisterModal(); return false;"><i class="fas fa-user-plus me-1"></i>Зарегистрироваться</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-modal" id="registerModal">
+        <div class="custom-modal-dialog">
+            <div class="custom-modal-content">
+                <div class="custom-modal-header border-0">
+                    <h5 class="custom-modal-title"><i class="fas fa-user-plus me-2"></i> Регистрация</h5>
+                    <button class="btn-close-modal" onclick="closeModal('registerModal')">✕</button>
+                </div>
+                <div class="custom-modal-body">
+                    <form id="regForm">
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-user me-1"></i>Имя</label><input type="text" class="form-control" id="regName" required placeholder="Иван Иванов"></div>
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label><input type="email" class="form-control" id="regEmail" required placeholder="example@mail.ru"></div>
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-phone me-1"></i>Телефон</label><input type="tel" class="form-control" id="regPhone" required placeholder="+7 (___) ___-__-__"></div>
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-lock me-1"></i>Пароль</label><input type="password" class="form-control" id="regPassword" required placeholder="минимум 6 символов"></div>
+                        <div class="mb-3"><label class="form-label"><i class="fas fa-lock me-1"></i>Подтверждение пароля</label><input type="password" class="form-control" id="regConfirmPassword" required></div>
+                        <button type="submit" class="btn-primary-custom w-100"><i class="fas fa-check-circle me-2"></i>Зарегистрироваться</button>
+                    </form>
+                    <hr>
+                    <p class="text-center mb-0">Уже есть аккаунт? <a href="#" onclick="closeModal('registerModal'); showLoginModal(); return false;"><i class="fas fa-sign-in-alt me-1"></i>Войти</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="orderModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-shopping-cart me-2"></i>Оформление заказа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderSummary" class="mb-3"></div>
+                    <form id="orderForm">
+                        <input type="text" class="form-control mb-2" id="orderAddress" placeholder="Адрес" required>
+                        <input type="tel" class="form-control mb-2" id="orderPhone" placeholder="Телефон" required>
+                        <input type="datetime-local" class="form-control mb-2" id="orderDateTime" required>
+                        <button type="submit" class="btn btn-primary-custom w-100"><i class="fas fa-check-circle me-2"></i>Подтвердить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+        function closeOffcanvasManual() {
+            const offcanvasElement = document.getElementById('offcanvasNavbar');
+            if (offcanvasElement) {
+                const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                if (offcanvas) offcanvas.hide();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#offcanvasNavbar a, #offcanvasNavbar button').forEach(link => {
+                link.addEventListener('click', function() { setTimeout(closeOffcanvasManual, 100); });
+            });
+        });
+    </script>
+</body>
+</html>

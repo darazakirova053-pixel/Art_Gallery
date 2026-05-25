@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>ArtGallery Админ-панель</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg" />
+</head>
+<body>
+    <nav class="navbar fixed-top" style="background-color: #656f57;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="img/logo.svg" alt="ArtGallery логотип" class="logo-img" style="height: 40px;" />
+                <span class="brand-text" style="color: white;">ArtGallery Админ</span>
+            </a>
+            
+            <div class="d-none d-md-flex align-items-center gap-3">
+                <ul class="navbar-nav flex-row gap-3">
+                    <li class="nav-item"><a class="nav-link text-white" href="index.html"><i class="fas fa-home me-2"></i>На сайт</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="catalog.html"><i class="fas fa-images me-2"></i>Каталог</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="news.html"><i class="fas fa-newspaper me-2"></i>Новости</a></li>
+                </ul>
+                <button class="btn btn-outline-light btn-sm" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt me-1"></i>Выйти</button>
+            </div>
+            
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" style="background-color: #656f57;">
+                <div class="offcanvas-header border-bottom border-light">
+                    <h5 class="offcanvas-title text-white">ArtGallery Админ</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body d-flex flex-column">
+                    <div class="admin-info-mobile-top text-center mb-4" style="display: block; cursor: pointer;" onclick="window.location.href='admin.html'; closeOffcanvasManual()">
+                        <i class="fas fa-user-shield" style="font-size: 60px; color: white;"></i>
+                        <div class="text-white mt-2 fw-bold admin-name" style="font-size: 1.1rem;"></div>
+                        <div class="text-white-50 small">Администратор</div>
+                    </div>
+                    
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="index.html" onclick="closeOffcanvasManual()"><i class="fas fa-home me-3"></i>На сайт</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="catalog.html" onclick="closeOffcanvasManual()"><i class="fas fa-images me-3"></i>Каталог</a></li>
+                        <li class="nav-item"><a class="nav-link text-white py-3" href="news.html" onclick="closeOffcanvasManual()"><i class="fas fa-newspaper me-3"></i>Новости</a></li>
+                    </ul>
+                    
+                    <div class="admin-info-mobile-bottom mt-auto pt-3" style="display: block;">
+                        <hr class="bg-light">
+                        <button class="btn btn-outline-light w-100" onclick="logoutAdmin(); closeOffcanvasManual()"><i class="fas fa-sign-out-alt me-2"></i>Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container admin-container">
+        <div class="admin-tabs">
+            <div class="admin-tab active" data-tab="dashboard"><i class="fas fa-chart-line me-2"></i>Дашборд</div>
+            <div class="admin-tab" data-tab="artworks"><i class="fas fa-palette me-2"></i>Картины</div>
+            <div class="admin-tab" data-tab="users"><i class="fas fa-users me-2"></i>Пользователи</div>
+            <div class="admin-tab" data-tab="orders"><i class="fas fa-shopping-cart me-2"></i>Заказы</div>
+            <div class="admin-tab" data-tab="promos"><i class="fas fa-tags me-2"></i>Акции</div>
+        </div>
+
+        <div id="dashboard-tab" class="tab-pane active">
+            <div class="admin-stats">
+                <div class="stat-card"><h3 id="statUsers">0</h3><p><i class="fas fa-users me-1"></i>Пользователей</p></div>
+                <div class="stat-card"><h3 id="statArtworks">0</h3><p><i class="fas fa-palette me-1"></i>Картин</p></div>
+                <div class="stat-card"><h3 id="statOrders">0</h3><p><i class="fas fa-shopping-cart me-1"></i>Заказов</p></div>
+                <div class="stat-card"><h3 id="statRevenue">0</h3><p><i class="fas fa- ruble-sign me-1"></i>Выручка</p></div>
+            </div>
+            <div class="admin-card">
+                <h4><i class="fas fa-chart-line me-2"></i>Последние заказы</h4>
+                <div id="recentOrders" class="admin-table"></div>
+            </div>
+        </div>
+
+        <div id="artworks-tab" class="tab-pane">
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                    <h4><i class="fas fa-palette me-2"></i>Управление картинами</h4>
+                    <button class="btn-primary-custom" onclick="openArtworkModal()"><i class="fas fa-plus me-2"></i>Добавить картину</button>
+                </div>
+                <div id="artworksList" class="admin-table"></div>
+            </div>
+        </div>
+
+        <div id="users-tab" class="tab-pane">
+            <div class="admin-card">
+                <h4><i class="fas fa-users me-2"></i>Список пользователей</h4>
+                <div id="usersList" class="admin-table"></div>
+            </div>
+        </div>
+
+        <div id="orders-tab" class="tab-pane">
+            <div class="admin-card">
+                <h4><i class="fas fa-shopping-cart me-2"></i>Все заказы</h4>
+                <div id="ordersList" class="admin-table"></div>
+            </div>
+        </div>
+
+        <div id="promos-tab" class="tab-pane">
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                    <h4><i class="fas fa-tags me-2"></i>Акции и скидки</h4>
+                    <button class="btn-primary-custom" onclick="openPromoModal()"><i class="fas fa-plus me-2"></i>Добавить акцию</button>
+                </div>
+                <div id="promosList" class="admin-table"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <p><i class="far fa-copyright me-1"></i> 2025-2026 ArtGallery. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="artworkModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="artworkModalTitle"><i class="fas fa-palette me-2"></i>Добавить картину</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="artworkForm" class="modal-form">
+                        <input type="hidden" id="artworkId" value="">
+                        <input type="text" id="artworkName" placeholder="Название картины" required>
+                        <input type="text" id="artworkAuthor" placeholder="Автор" required>
+                        <input type="number" id="artworkPrice" placeholder="Цена (₽)" required>
+                        <input type="text" id="artworkImage" placeholder="URL изображения" required>
+                        <input type="text" id="artworkSize" placeholder="Размер (например, 60x80 см)" required>
+                        <input type="text" id="artworkTechnique" placeholder="Техника (масло, акрил...)" required>
+                        <textarea id="artworkDesc" rows="3" placeholder="Описание"></textarea>
+                        <select id="artworkCategory">
+                            <option value="modern"><i class="fas fa-palette me-1"></i>Современное искусство</option>
+                            <option value="classic"><i class="fas fa-landmark me-1"></i>Классика</option>
+                        </select>
+                        <button type="submit" class="btn-primary-custom w-100"><i class="fas fa-save me-2"></i>Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="promoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title"><i class="fas fa-tag me-2"></i>Добавить акцию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="promoForm" class="modal-form">
+                        <input type="hidden" id="promoId" value="">
+                        <input type="text" id="promoTitle" placeholder="Название акции" required>
+                        <textarea id="promoDesc" rows="3" placeholder="Описание акции" required></textarea>
+                        <input type="number" id="promoDiscount" placeholder="Скидка (%)" required>
+                        <button type="submit" class="btn-primary-custom w-100"><i class="fas fa-save me-2"></i>Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="orderStatusModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title"><i class="fas fa-sync-alt me-2"></i>Изменить статус заказа</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select id="orderStatusSelect" class="form-control">
+                        <option value="new"><i class="fas fa-star me-1"></i>Новый</option>
+                        <option value="processing"><i class="fas fa-cog me-1"></i>В обработке</option>
+                        <option value="shipped"><i class="fas fa-truck me-1"></i>Отправлен</option>
+                        <option value="delivered"><i class="fas fa-check-circle me-1"></i>Доставлен</option>
+                        <option value="cancelled"><i class="fas fa-ban me-1"></i>Отменён</option>
+                    </select>
+                    <button class="btn-primary-custom w-100 mt-3" onclick="updateOrderStatus()"><i class="fas fa-save me-2"></i>Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
+    <script>
+        function closeOffcanvasManual() {
+            const offcanvasElement = document.getElementById('offcanvasNavbar');
+            if (offcanvasElement) {
+                const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                if (offcanvas) offcanvas.hide();
+            }
+        }
+        
+        function logoutAdmin() {
+            localStorage.removeItem('artCurrentUser');
+            window.location.href = 'index.html';
+        }
+        
+        function updateAdminUI() {
+            const saved = localStorage.getItem('artCurrentUser');
+            if (saved) {
+                const user = JSON.parse(saved);
+                if (user.role === 'admin') {
+                    const adminNameSpan = document.querySelector('.admin-name');
+                    if (adminNameSpan) adminNameSpan.textContent = user.name;
+                }
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAdminUI();
+            document.querySelectorAll('#offcanvasNavbar a, #offcanvasNavbar button').forEach(link => {
+                link.addEventListener('click', function() { setTimeout(closeOffcanvasManual, 100); });
+            });
+        });
+    </script>
+</body>
+</html>
